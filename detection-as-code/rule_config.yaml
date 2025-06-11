@@ -1,3 +1,6 @@
+new_rule:
+  alerting: false
+  enabled: true
 Chrome_Browser_Alert_SideLoaded_Extensions:
   alerting: false
   archive_time: '2025-05-15T21:44:35.176114Z'
