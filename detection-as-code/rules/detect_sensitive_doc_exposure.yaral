@@ -1,0 +1,23 @@
+rule detect_sensitive_doc_exposure {
+	meta:
+		description = "Identifies potentially sensitive internal documents copied and shared externally"
+		reference = "http://..."  // If you have a relevant reference
+		author = "Joshua Koch"
+		created = "2024-02-07"
+        lastUpdated = "2024-02-08"
+        product = "Google Workspace"
+        severity = "high"
+	
+    events:
+        $gdrive.metadata.log_type = "WORKSPACE_ACTIVITY"
+        $gdrive.metadata.product_name = "drive"
+        $gdrive.metadata.product_event_type = "change_document_visibility"
+        ($gdrive.metadata.event_type = "USER_RESOURCE_UPDATE_PERMISSIONS" or $gdrive.metadata.event_type = "USER_CHANGE_PERMISSIONS")
+        $gdrive.metadata.product_event_type = "change_document_access_scope"
+        //$gdrive.target.user.email_addresses = "joshua.koch@gmail.com"
+        
+        //$gdrive.metadata.email-need-tofix = /(\@airbnb.com|\@ext.airbnb.com|\@partners.airbnb.com)/
+    condition:
+        $gdrive
+		
+}

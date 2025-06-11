@@ -1,0 +1,16 @@
+rule admin_login {
+  meta:
+    author = "Google SecOps Gemini"
+    description = "Alert when admin logs in"
+    severity = "LOW"
+
+  events:
+    $e.metadata.event_type = "USER_LOGIN"
+    $e.principal.user.userid = "admin"
+  outcome:
+    $user = $e.principal.user.userid
+    $details = array($e.security_result.action_details)
+    $summary = array($e.security_result.summary)
+  condition:
+    $e
+}

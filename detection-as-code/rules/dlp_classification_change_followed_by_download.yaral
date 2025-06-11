@@ -1,0 +1,21 @@
+rule dlp_classification_change_followed_by_download {
+ meta:
+    author = "Capital One"
+    description = "Detect when a user changes a DLP label and then downloads the file within xxx minutes"
+    reference = "https://..."
+    version = "0.01"
+    created = "2024-06-24"
+    product = "Google Workspace"
+    service = "security"
+    mitre = "new change"
+
+  events:
+    $dlp.metadata.product_name = "drive"
+    $dlp.target.resource.attribute.labels.value = "Data Security Classification"
+    $dlp.target.resource.attribute.labels.key = "new_value"
+    $dlp.target.resource.attribute.labels.key = "new_value_id"
+    $dlp.principal.user.userid = $USER_ID
+    /// not $user.principal.user.userid = "DLP"
+  condition:
+    $dlp
+}

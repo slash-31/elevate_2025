@@ -1,0 +1,22 @@
+
+rule host_connecting_to_many_internal_hosts {
+  meta:
+    author = "Google SecOps Gemini"
+    description = "Host that connects to more than 256 internal hosts over a 1 hour period, list each unique target for the last month and are any of the public IPs associated with APT23"
+    severity = "HIGH"
+  events:
+    $e.metadata.event_type = "NETWORK_CONNECTION"
+    $e.principal.ip != ""
+    $e.target.ip != ""
+    $e.principal.hostname = $host
+    $e.target.hostname = $target
+    $e.metadata.event_timestamp.seconds >= timestamp.current_seconds() - (30 * 86400)
+    $e.metadata.event_timestamp.seconds < timestamp.current_seconds()
+  match:
+    $host over 1h
+  outcome:
+    $target_hostnames = array_distinct($target)
+    $event_count = count_distinct($e.metadata.id)
+  condition:
+    #target > 256
+}

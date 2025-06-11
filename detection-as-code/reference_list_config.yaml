@@ -1,0 +1,12 @@
+unsuspended_service_accounts:
+  description: 'List of service accounts that should not be disabled
+
+    soar-integration-user@joshuakoch.altostrat.com
+
+    workspace@joshuakoch.altostrat.com'
+  resource_name: projects/chronicle-weirdstuff/locations/us/instances/21991318-0099-4226-8930-e9ea750694dc/referenceLists/unsuspended_service_accounts
+  revision_create_time: '2024-09-11T21:34:53.712799Z'
+  rule_associations_count: 1
+  rules:
+  - projects/519397725006/locations/us/instances/21991318-0099-4226-8930-e9ea750694dc/rules/ru_2e7ff2cf-92ef-4c5d-86d4-9fee44358d04
+  syntax_type: REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING

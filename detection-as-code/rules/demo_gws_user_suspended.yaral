@@ -1,0 +1,37 @@
+rule demo_gws_user_suspended {
+
+  meta:
+    author = "Google Cloud Security"
+    description = "Identifies when a user account is suspended in Google Workspace that matches a list of user accounts that should not be suspended"
+    mitre_attack_tactic = "Initial Access"
+    mitre_attack_technique = "Valid Accounts: Cloud Accounts"
+    mitre_attack_url = "https://attack.mitre.org/techniques/T1078/004/"
+    mitre_attack_version = "v13.1"
+    type = "Alert"
+    data_source = "Workspace Activity"
+    severity = "Medium"
+    priority = "Medium"
+
+  events:
+    $ws.metadata.vendor_name = "Google Workspace" nocase
+    $ws.metadata.log_type = "WORKSPACE_ACTIVITY" nocase
+    $ws.metadata.product_name = "admin" nocase
+    ($ws.metadata.product_event_type = "SUSPEND_USER" or $ws.metadata.product_event_type = "UNSUSPEND_USER")
+    $ws.target.user.email_addresses in %unsuspended_service_accounts
+
+  outcome:
+    $risk_score = max(35)
+    $mitre_attack_tactic = "Initial Access"
+    $mitre_attack_technique = "Valid Accounts: Cloud Accounts"
+    $mitre_attack_technique_id = "T1078.004"
+    $event_count = count_distinct($ws.metadata.id)
+    $principal_ip = array_distinct($ws.principal.ip)
+    $principal_country = array_distinct($ws.principal.ip_geo_artifact.location.country_or_region)
+    $principal_state = array_distinct($ws.principal.ip_geo_artifact.location.state)
+    $principal_user_emails = array_distinct($ws.principal.user.email_addresses)
+    $target_user_emails = array_distinct($ws.target.user.email_addresses)
+    $principal_user_id = $ws.principal.user.userid
+
+  condition:
+    $ws
+}

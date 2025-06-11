@@ -1,0 +1,21 @@
+rule demo_gws_dlp_alert {
+  meta:
+    author = "Joshua Koch"
+    description = "DLP Alert generated from Workspace"
+    severity = "HIGH"
+
+  events:
+    $dlp.metadata.log_type = "WORKSPACE_ALERTS"
+    $dlp.metadata.product_event_type = "DlpRuleViolation"
+    $dlp.metadata.product_name = "Google Workspace Alerts"
+  outcome:
+    $event_type = $dlp.metadata.event_type
+    $product_name = $dlp.metadata.product_name
+    $product_event_type = $dlp.metadata.product_event_type
+    $principal_ip = array($dlp.principal.ip)
+    $target_ip = array($dlp.target.ip)
+    $ws_user = count_distinct($dlp.principal.user.userid)
+  
+  condition:
+    $dlp
+}
