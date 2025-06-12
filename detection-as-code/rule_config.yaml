@@ -250,3 +250,6 @@ rule_1717087582401:
   revision_id: v_1717087587_264319000
   run_frequency: LIVE
   type: SINGLE_EVENT
+DaC_GCP_SAEditorOwner:
+  alerting: true
+  enabled: true

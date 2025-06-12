@@ -1,0 +1,46 @@
+rule DaC_GCP_SAEditorOwner {
+  meta:
+    rule_name = "GCP Service Account Editor or Owner"
+    description = "Identifies a new Service Account created with Editor or Owner role within the project. These roles are overly permissive and can provide highly-privilaged access to Service Account identities."
+    severity = "Low"
+    tactic = "TA0004"
+    technique = "T1078.004"
+
+  // Service Account created as editor or owner of the project.
+  events:
+    // 1) Service Account created
+    $e1.metadata.event_type = "USER_RESOURCE_CREATION"
+    $e1.metadata.product_event_type = "google.iam.admin.v1.CreateServiceAccount"
+    $e1.target.resource.resource_type = "SERVICE_ACCOUNT"
+    $e1.security_result.action = "ALLOW"
+    re.capture($e1.target.resource.name, "(.*)") = $serviceaccount
+
+    // 2) Editor or owner role added
+    $e2.metadata.event_type = "USER_RESOURCE_UPDATE_PERMISSIONS"
+    $e2.metadata.product_event_type = "SetIamPolicy"
+    $e2.principal.user.attribute.roles.name = /(roles\/editor|roles\/owner|roles\/admin)/
+    $e2.principal.user.attribute.roles.description = "ADD"
+    $e2.target.user.email_addresses = /serviceAccount/
+    $e2.target.resource.resource_type = "CLOUD_PROJECT"
+    $e2.security_result.action = "ALLOW"
+    re.capture($e2.target.user.email_addresses, "serviceAccount:(.*)") = $serviceaccount
+
+  // Adding this equality to tie the two events together (necessary when using assignment placeholders)
+    $e1.security_result.action = $e2.security_result.action
+
+  match:
+    $serviceaccount over 2m
+
+  outcome:
+    $risk_score = max(35)
+    $e1_email_address = array_distinct($e1.principal.user.email_addresses)
+    $e2_email_address = array_distinct($e2.principal.user.email_addresses)
+    $e1_resource_name = array_distinct($e1.target.resource.name)
+    $e2_resource_name = array_distinct($e2.target.resource.name)
+    $e1_ip = array_distinct($e1.principal.ip)
+    $e2_ip = array_distinct($e2.principal.ip)
+    $vendor_name = array_distinct($e1.metadata.vendor_name)
+    $product_name = array_distinct($e1.metadata.product_name)
+  condition:
+    $e1 and $e2
+}
