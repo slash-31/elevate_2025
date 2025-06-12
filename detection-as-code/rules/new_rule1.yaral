@@ -1,4 +1,4 @@
-rule new_rule {
+rule new_rule1 {
   meta:
     author = "Google Cloud Security"
     description = "Identify network traffic based on target country"
