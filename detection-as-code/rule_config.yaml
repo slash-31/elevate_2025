@@ -22,6 +22,18 @@ DaC_Chrome_Browser_Alert_SideLoaded_Extensions:
   revision_id: v_1747346338_597487000
   run_frequency: DAILY
   type: SINGLE_EVENT
+DaC_GCP_SAEditorOwner:
+  alerting: true
+  archive_time: null
+  archived: false
+  create_time: '2025-06-12T16:04:54.926255Z'
+  enabled: true
+  id: ru_500303be-8743-4493-bf48-ed7dfeb62107
+  resource_name: projects/519397725006/locations/us/instances/21991318-0099-4226-8930-e9ea750694dc/rules/ru_500303be-8743-4493-bf48-ed7dfeb62107
+  revision_create_time: '2025-06-12T16:04:54.926255Z'
+  revision_id: v_1749744294_926255000
+  run_frequency: LIVE
+  type: MULTI_EVENT
 DaC_demo_gws_user_suspended:
   alerting: true
   archive_time: null
@@ -250,6 +262,3 @@ rule_1717087582401:
   revision_id: v_1717087587_264319000
   run_frequency: LIVE
   type: SINGLE_EVENT
-DaC_GCP_SAEditorOwner:
-  alerting: true
-  enabled: true
